@@ -1,7 +1,7 @@
 /*
 datos que tomamos del proceso de confirguración de la base de datos online MongoDB Altas
 */
-// mongodb+srv://dBuser1:dBuser1@cluster0.schfn.mongodb.net/?retryWrites=true&w=majority
+// mongodb+srv://<user>:<password>@cluster0.schfn.mongodb.net/?retryWrites=true&w=majority
 
 
 const express = require('express');
@@ -14,7 +14,7 @@ pasándole como parámetro el string que nos dió la misma cuando la configuramo
 al elegir el método de conexión. Ese método .conect() devuelve una Promesa/Promise
 que resolvemos con la función .then() (... y .catch() para los posibles errores)
 */
-mongoose.connect('mongodb+srv://dBuser1:dBuser1@cluster0.schfn.mongodb.net/?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://<user>:<password>@cluster0.schfn.mongodb.net/?retryWrites=true&w=majority')
   .then(() => {
     console.log('Conectados a MongoDB Atlas!');
   })
