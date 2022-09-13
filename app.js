@@ -1,9 +1,19 @@
-
+/*
+datos que tomamos del proceso de confirguración de la base de datos online MongoDB Altas
+*/
 // mongodb+srv://dBuser1:dBuser1@cluster0.schfn.mongodb.net/?retryWrites=true&w=majority
 
 
 const express = require('express');
 const mongoose = require('mongoose');
+
+/*
+usa el método .conect() de Mongoose
+para conectarse a nuestra base de datos online MongoDB Altas,
+pasándole como parámetro el string que nos dió la misma cuando la configuramos,
+al elegir el método de conexión. Ese método .conect() devuelve una Promesa/Promise
+que resolvemos con la función .then() (... y .catch() para los posibles errores)
+*/
 mongoose.connect('mongodb+srv://dBuser1:dBuser1@cluster0.schfn.mongodb.net/?retryWrites=true&w=majority')
   .then(() => {
     console.log('Conectados a MongoDB Atlas!');
@@ -25,41 +35,15 @@ app.use((req, res, next) => {
   });
   
   
-  
   app.use((req, res, next) => {
     console.log('Respuesta enviada con éxito!');
     next();
   });
   
 
-
-// app.get('/api/v1/meetings', (req, res, next) => {
-//     const meetings = [
-//       {
-//         titulo: 'Reunión 01',
-//         descripción: 'Presentacion',
-//         hora: '01-09-2021 18:00',
-//         usuarioId: 'rgse78ctq8gt387g',
-//       },
-//       {
-//         titulo: 'Reunión 02',
-//         descripción: 'Clase 04',
-//         hora: '08-09-2021 18:00',
-//         usuarioId: 'rgse78ctq8gt387g',
-  
-//       },
-//     ];
-//     res.status(404).json(meetings);
-//     next();
-//   });
-  
-
-
-// app.get('/api/v1/meetings/:id', (req, res) => {
-//     const id = req.params.id;
-//     res.end('Reunión ' + id);
-// });
-
+/*
+middleware para pedir los datos de una determinada reunión
+*/
 app.get('/api/v1/meetings/:id', (req, res, next) => {
   Meeting.findOne({
     _id: req.params.id
@@ -76,6 +60,9 @@ app.get('/api/v1/meetings/:id', (req, res, next) => {
   );
 });
 
+/*
+middleware para modificar los datos de una determinada reunión
+*/
 app.put('/api/v1/meetings/:id', (req, res, next) => {
   const meeting = new Meeting({
     _id: req.params.id,
@@ -99,6 +86,9 @@ app.put('/api/v1/meetings/:id', (req, res, next) => {
   );
 });
 
+/*
+middleware para borrar el registro de una determinada reunión
+*/
 app.delete('/api/v1/meetings/:id', (req, res, next) => {
   Meeting.deleteOne({_id: req.params.id}).then(
     () => {
@@ -116,22 +106,9 @@ app.delete('/api/v1/meetings/:id', (req, res, next) => {
 });
 
 
-// app.delete('/api/v1/meetings/:id', (req, res) => {
-//     const id = req.params.id;
-//     res.end('Reunion ' + id + ' ELIMINADA!');
-// });
-
-
-// app.post('/api/v1/meetings', (req, res) => {
-//     const datosReunion = req.body; // los datos de la reunión que recibimos
-//     console.log(datosReunion); 
-//     res.status(201).json({
-//         message: 'Reunion creada!',
-//         datosReunion
-//     });
-// });
-
-
+/*
+middleware para registrar una reunión nueva
+*/
 app.post('/api/v1/meetings', (req, res, next) => {
     const meeting = new Meeting({
       title: req.body.title,
@@ -155,6 +132,9 @@ app.post('/api/v1/meetings', (req, res, next) => {
   });
 
 
+/*
+middleware para pedir el listado de todas las reuniones
+*/
   app.get('/api/v1/meetings', (req, res, next) => {
     Meeting.find().then(
       (meetings) => {
@@ -168,7 +148,6 @@ app.post('/api/v1/meetings', (req, res, next) => {
       }
     );
   });
-
 
 
 module.exports = app;
