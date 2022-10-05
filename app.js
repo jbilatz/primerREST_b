@@ -1,66 +1,39 @@
-const express = require('express');
-const app = express();
+/*
+datos que tomamos del proceso de confirguración de la base de datos online MongoDB Altas
+*/
+// user - pass: dBuser1 : dBuser1
+// SRV: mongodb+srv://dBuser1:dBuser1@cluster0.schfn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
 
-app.use(express.json())
+const express  = require('express'); // carga el módulo Express
+const mongoose = require('mongoose'); // carga el módulo Mongoose
+const Meeting = require('./models/meeting'); // carga el esquema de Mongoose que generamos en la carpeta "models"
 
+const calenRoutes = require('./rutas/calendario');
+const usuariosRoutes = require('./rutas/usuario');
 
-app.use((req, res, next) => {
-    console.log('Solicitud recibida!');
-    next();
-  });
-  
-  
-  
-  app.use((req, res, next) => {
-    console.log('Respuesta enviada con éxito!');
-    next();
-  });
-  
+const app = express(); // instancia nuetra app
 
+/*
+usa el método .conect() de Mongoose
+para conectarse a nuestra base de datos online MongoDB Altas,
+pasándole como parámetro el string que nos dió la misma cuando la configuramos,
+al elegir el método de conexión. Ese método .conect() devuelve una Promesa/Promise
+que resolvemos con la función .then() (... y .catch() para los posibles errores)
+*/
+mongoose.connect('mongodb+srv://dBuser1:dBuser1@cluster0.schfn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+.then(() => {
+    console.log('Conectados a MongoDB!');
+})
+.catch((error) => {
+    console.log('FALLA al conectarse a MongoDB!');
+    console.log(error);
 
-app.get('/api/v1/meetings', (req, res, next) => {
-    const meetings = [
-      {
-        titulo: 'Reunión 01',
-        descripción: 'Presentacion',
-        hora: '01-09-2021 18:00',
-        usuarioId: 'rgse78ctq8gt387g',
-      },
-      {
-        titulo: 'Reunión 02',
-        descripción: 'Clase 04',
-        hora: '08-09-2021 18:00',
-        usuarioId: 'rgse78ctq8gt387g',
-  
-      },
-    ];
-    res.status(404).json(meetings);
-    next();
-  });
-  
+}); 
+
+app.use(express.json()); // para parsear como JSON el cuerpo de nuestra solicitud, y la respuesta
+
+app.use('/api/v1/meetings', calenRoutes);
+app.use('/api/v1/auth', usuariosRoutes);
 
 
-app.get('/api/v1/meetings/:id', (req, res) => {
-    const id = req.params.id;
-    res.end('Reunión ' + id);
-});
-
-app.delete('/api/v1/meetings/:id', (req, res) => {
-    const id = req.params.id;
-    res.end('Reunion ' + id + ' ELIMINADA!');
-});
-
-
-app.post('/api/v1/meetings', (req, res) => {
-    const datosReunion = req.body; // los datos de la reunión que recibimos
-    console.log(datosReunion); 
-    res.status(201).json({
-        message: 'Reunion creada!',
-        datosReunion
-    });
-});
-
-
-
-module.exports = app;
-
+module.exports = app; // exportamos nuestra app para poder tomerla en el server
