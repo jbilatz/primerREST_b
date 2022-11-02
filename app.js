@@ -30,6 +30,21 @@ mongoose.connect('mongodb+srv://dBuser1:dBuser1@cluster0.schfn.mongodb.net/myFir
 
 }); 
 
+
+
+/*
+para prevenir CORS errors
+*/
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
+  });
+
+
+
+
 app.use(express.json()); // para parsear como JSON el cuerpo de nuestra solicitud, y la respuesta
 
 app.use('/api/v1/meetings', calenRoutes);
